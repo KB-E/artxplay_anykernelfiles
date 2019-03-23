@@ -57,7 +57,7 @@ ui_print "|   \__/  |   \___|   |   /°      //° /__\  \ ";
 ui_print "|\        (   °-  \   |  |:  __   \   /  \°  \ ";
 ui_print "\_\______/ \_______)__|  |__|  \___|_/    \___) ";
 ui_print " ";
-ui_print "                - v6 AnyKernel - ";
+ui_print "                - v1 AnyKernel - ";
 ui_print " ";
 ui_print "==============================================|";
 mkdir -p /tmp/anykernel/bin;

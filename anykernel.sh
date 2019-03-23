@@ -5,7 +5,7 @@
 kernel.string=ArtxPlay for the Moto Z Play
 permissive=1
 do.devicecheck=1
-do.initd=1
+do.initd=0
 do.ukm=0
 do.modules=0
 do.cleanup=1
