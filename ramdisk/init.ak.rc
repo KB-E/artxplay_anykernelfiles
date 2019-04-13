@@ -1,0 +1,40 @@
+on early-init
+    write /sys/block/mmcblk0/queue/read_ahead_kb 1024
+    write /sys/block/mmcblk0/queue/sheduler maple
+
+on property:sys.boot_completed=1
+    # according to Qcom this legacy value improves first launch latencies
+    # stock value is 512k
+    setprop dalvik.vm.heapminfree 2m    
+
+    # AutoSMP
+    write /sys/module/autosmp/parameters/enabled Y
+    write /sys/kernel/autosmp/conf/cpufreq_down 60
+    write /sys/kernel/autosmp/conf/cpufreq_up 80
+    write /sys/kernel/autosmp/conf/min_cpus 1
+    write /sys/kernel/autosmp/conf/delay 250
+    write /sys/kernel/autosmp/conf/scroff_single_core 1
+
+    # CPU Boost
+    write /sys/module/cpu_boost/parameters/input_boost_enabled 1
+    write /sys/module/cpu_boost/parameters/input_boost_freq "0:1401600 1:1401600 2:1401600 3:1401600 4:0 5:0 6:0 7:0"
+    write /sys/module/cpu_boost/parameters/input_boost_ms 80
+
+    # GPU MinFreq
+    write /sys/devices/soc/1c00000.qcom,kgsl-3d0/devfreq/1c00000.qcom,kgsl-3d0/min_freq 650000000
+
+    # FastCharge
+    write /sys/kernel/fast_charge/force_fast_charge 1
+
+    # IO
+    write /sys/block/mmcblk0/queue/sheduler maple
+    write /sys/block/mmcblk0/queue/read_ahead_kb 1024
+    write /sys/block/mmcblk0/queue/rq_affinity 0
+    write /sys/block/mmcblk0/queue/add_random 0
+    write /sys/block/mmcblk0/queue/iostats 0
+    write /sys/module/sync/parameters/fsync_enabled N
+    
+    # RAM Management
+    write /proc/sys/vm/swappiness 60
+    write /sys/module/lowmemorykiller/parameters/minfree "14746,18432,22118,25805,33038,41988"
+
