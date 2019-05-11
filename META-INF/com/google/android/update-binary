@@ -51,7 +51,7 @@ ui_print "(___/    \___|__|  \___)    \__|   (___/\___)        ";
 ui_print " ";
 ui_print "- ArtxPlay Kernel Project ";
 ui_print "- AnyKernel by: XDA @Osm0sis";
-ui_print "- v1.0-Release by: XDA @Stayn             ";
+ui_print "- v2.0-Release[arm64] by: XDA @Stayn             ";
 ui_print " ";
 ui_print "==============================================|";
 mkdir -p /tmp/anykernel/bin;
@@ -92,6 +92,11 @@ fi;
 PATH="/tmp/anykernel/bin:$PATH" $bb ash /tmp/anykernel/anykernel.sh $2;
 if [ $? != "0" ]; then
   abort;
+fi;
+
+if [ "$(file_getprop /tmp/anykernel/anykernel.sh setskiagl)" == 1 ]; then
+  echo "# Set SkiaGL Default renderer" >> /system/build.prop;
+  echo "debug.hwui.renderer=skiagl" >> /system/build.prop;
 fi;
 
 if [ "$(file_getprop /tmp/anykernel/anykernel.sh do.cleanup)" == 1 ]; then
