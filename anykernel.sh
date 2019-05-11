@@ -5,6 +5,7 @@
 kernel.string=
 permissive=1
 do.devicecheck=1
+do.setskiagl=1
 do.cleanup=1
 device.name1=addison
 
@@ -46,14 +47,34 @@ elif [ "$SDK" -eq "26" ]; then
 fi;
 
 # Patch init.rc
-ui_print "[!]- Adding AP-Kernel Settings Patch"
-mount -o rw,remount -t auto /system >/dev/null;
-if [ -f /system/vendor/etc/init/hw/init.qcom.rc ]; then
+mount -o rw -t auto /vendor;
+mount -o rw -t auto /system;
+if [ -f /vendor/etc/init/hw/init.qcom.rc ]; then
+  ui_print "[+]- Adding AP-Kernel Settings Patch to /vendor";
+  ui_print "[+]- Adding Spectrum support";
+  cp /tmp/anykernel/ramdisk/init.ak.rc /vendor/etc/init/hw/init.ak.rc;
+  cp /tmp/anykernel/ramdisk/init.spectrum.rc /vendor/etc/init/hw/init.spectrum.rc
+  cp /tmp/anykernel/ramdisk/init.spectrum.sh /vendor/etc/init/hw/init.spectrum.sh
+  insert_line /vendor/etc/init/hw/init.qcom.rc "init.ak.rc" after "import /vendor/etc/init/hw/init.mmi.rc" "import /vendor/etc/init/hw/init.ak.rc";
+  insert_line /vendor/etc/init/hw/init.qcom.rc "init.spectrum.rc" after "import /vendor/etc/init/hw/init.ak.rc" "import /vendor/etc/init/hw/init.spectrum.rc"
+  chmod 644 /vendor/etc/init/hw/init.ak.rc;
+  chmod 644 /vendor/etc/init/hw/init.spectrum.rc
+  chmod 644 /vendor/etc/init/hw/init.spectrum.sh
+elif [ -f /system/vendor/etc/init/hw/init.qcom.rc ]; then
+  ui_print "[+]- Adding AP-Kernel Settings Patch to /system"
+  ui_print "[+]- Adding Spectrum support";
+  cp /tmp/anykernel/ramdisk/init.ak.rc /system/vendor/etc/init/hw/init.ak.rc;
+  cp /tmp/anykernel/ramdisk/init.spectrum.rc /system/vendor/etc/init/hw/init.spectrum.rc
+  cp /tmp/anykernel/ramdisk/init.spectrum.sh /system/vendor/etc/init/hw/init.spectrum.sh
   cp /tmp/anykernel/ramdisk/init.ak.rc /system/vendor/etc/init/hw/init.ak.rc;
   insert_line /system/vendor/etc/init/hw/init.qcom.rc "init.ak.rc" after "import /vendor/etc/init/hw/init.mmi.rc" "import /vendor/etc/init/hw/init.ak.rc";
+  insert_line /system/vendor/etc/init/hw/init.qcom.rc "init.spectrum.rc" after "import /system/vendor/etc/init/hw/init.ak.rc" "import /system/vendor/etc/init/hw/init.spectrum.rc"
   chmod 644 /system/vendor/etc/init/hw/init.ak.rc;
+  chmod 644 /system/vendor/etc/init/hw/init.spectrum.rc
+  chmod 644 /system/vendor/etc/init/hw/init.spectrum.sh
 fi
-mount -o remount,ro /system;
+umount /vendor;
+umount /system;
 
 # Sepolicy
 $bin/magiskpolicy --load sepolicy --save sepolicy \
