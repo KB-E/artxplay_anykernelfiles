@@ -6,6 +6,7 @@ ramdisk=/tmp/anykernel/ramdisk;
 bin=/tmp/anykernel/tools;
 split_img=/tmp/anykernel/split_img;
 patch=/tmp/anykernel/patch;
+CPUABI="$(grep -m 1 "ro.product.cpu.abi" "/system/build.prop" | cut -d '=' -f 2)";
 
 chmod -R 755 $bin;
 mkdir -p $split_img;
@@ -253,12 +254,24 @@ flash_boot() {
       unknown=`cat *-unknown`;
     fi;
   fi;
-  for i in zImage zImage-dtb Image.gz Image Image-dtb Image.gz-dtb Image.bz2 Image.bz2-dtb Image.lzo Image.lzo-dtb Image.lzma Image.lzma-dtb Image.xz Image.xz-dtb Image.lz4 Image.lz4-dtb Image.fit; do
-    if [ -f /tmp/anykernel/$i ]; then
-      kernel=/tmp/anykernel/$i;
-      break;
+  if [ "$CPUABI" = "arm64-v8a" ]; then
+    if [ -f /tmp/anykernel/Image.gz-dtb ]; then
+      ui_print "     Flashing Kernel for arm64"
+      kernel=/tmp/anykernel/Image.gz-dtb;
     fi;
-  done;
+  fi;
+  if [ "$CPUABI" = "armeabi" ]; then
+    if [ -f /tmp/anykernel/zImage ]; then
+      ui_print "     Flashing Kernel for arm"
+      kernel=/tmp/anykernel/zImage;
+    fi;
+  fi;
+  if [ "$CPUABI" = "armeabi-v7a" ]; then
+    if [ -f /tmp/anykernel/zImage ]; then
+      ui_print "     Flashing Kernel for arm"
+      kernel=/tmp/anykernel/zImage;
+    fi;
+  fi;
   if [ ! "$kernel" ]; then
     kernel=`ls *-zImage`;
     kernel=$split_img/$kernel;
