@@ -256,19 +256,19 @@ flash_boot() {
   fi;
   if [ "$CPUABI" = "arm64-v8a" ]; then
     if [ -f /tmp/anykernel/Image.gz-dtb ]; then
-      ui_print "     Flashing Kernel for arm64"
+      ui_print "       Flashing Kernel for arm64"
       kernel=/tmp/anykernel/Image.gz-dtb;
     fi;
   fi;
   if [ "$CPUABI" = "armeabi" ]; then
     if [ -f /tmp/anykernel/zImage ]; then
-      ui_print "     Flashing Kernel for arm"
+      ui_print "       Flashing Kernel for arm"
       kernel=/tmp/anykernel/zImage;
     fi;
   fi;
   if [ "$CPUABI" = "armeabi-v7a" ]; then
     if [ -f /tmp/anykernel/zImage ]; then
-      ui_print "     Flashing Kernel for arm"
+      ui_print "       Flashing Kernel for arm"
       kernel=/tmp/anykernel/zImage;
     fi;
   fi;
