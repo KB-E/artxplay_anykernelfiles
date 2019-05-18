@@ -29,8 +29,8 @@ dump_boot;
 # Android Version
 if [ -f "/system/build.prop" ]; then
   SDK="$(grep "ro.build.version.sdk" "/system/build.prop" | cut -d '=' -f 2)";
-  ui_print "     Android SDK API: $SDK.";
-  ui_print "     Android CPU ABI: $CPUABI.";
+  ui_print "       Android SDK API: $SDK.";
+  ui_print "       Android CPU ABI: $CPUABI.";
   if [ "$SDK" -le "25" ]; then
     ui_print " "; ui_print "[!]- Android 7.1 and older is not supported. Aborting..."; exit 1;
   fi;
@@ -40,11 +40,11 @@ fi;
 
 # Detect ROM SDK
 if [ "$SDK" -ge "28" ]; then
-  ui_print "     Android Version: 9.0-Pie";
+  ui_print "       Android Version: 9.0-Pie";
 elif [ "$SDK" -ge "27" ]; then
-  ui_print "     Android Version: 8.1-Oreo";
+  ui_print "       Android Version: 8.1-Oreo";
 elif [ "$SDK" -eq "26" ]; then
-  ui_print "     Android Version: 8.0-Oreo";
+  ui_print "       Android Version: 8.0-Oreo";
 fi;
 sleep 1
 ui_print " "
@@ -52,38 +52,33 @@ ui_print " "
 # Patch init.rc
 ui_print "   - Pathing Ramdisk Files"
 mount -o rw -t auto /vendor;
-mount -o rw -t auto /system;
 if [ -f /vendor/etc/init/hw/init.qcom.rc ]; then
-  ui_print "     Treble ROM Detected";
-  ui_print "     Adding AP-Kernel Settings Patch to /vendor";
-  ui_print "     Adding Spectrum support";
-  mixerpath=/vendor/etc/mixer_paths_wcd9305.xml;
+  ui_print "       Treble ROM Detected";
+  ui_print "       Adding AP-Kernel Settings Patch to /vendor";
+  ui_print "       Adding Spectrum support";
   cp /tmp/anykernel/ramdisk/init.ak.rc /vendor/etc/init/hw/init.ak.rc;
   cp /tmp/anykernel/ramdisk/init.spectrum.rc /vendor/etc/init/hw/init.spectrum.rc
   cp /tmp/anykernel/ramdisk/init.spectrum.sh /vendor/etc/init/hw/init.spectrum.sh
   insert_line /vendor/etc/init/hw/init.qcom.rc "init.ak.rc" after "import /vendor/etc/init/hw/init.mmi.rc" "import /vendor/etc/init/hw/init.ak.rc";
-  insert_line /vendor/etc/init/hw/init.qcom.rc "init.spectrum.rc" after "import /vendor/etc/init/hw/init.ak.rc" "import /vendor/etc/init/hw/init.spectrum.rc"
+  insert_line /vendor/etc/init/hw/init.qcom.rc "init.spectrum.rc" after "import /vendor/etc/init/hw/init.mmi.rc" "import /vendor/etc/init/hw/init.spectrum.rc"
   chmod 644 /vendor/etc/init/hw/init.ak.rc;
   chmod 644 /vendor/etc/init/hw/init.spectrum.rc
   chmod 644 /vendor/etc/init/hw/init.spectrum.sh
-  ui_print " "
 elif [ -f /system/vendor/etc/init/hw/init.qcom.rc ]; then
-  ui_print "     Adding AP-Kernel Settings Patch to /system"
-  ui_print "     Adding Spectrum support";
-  mixerpath=/system/vendor/etc/mixer_paths_wcd9305.xml;
+  ui_print "       Adding AP-Kernel Settings Patch to /system"
+  ui_print "       Adding Spectrum support";
   cp /tmp/anykernel/ramdisk/init.ak.rc /system/vendor/etc/init/hw/init.ak.rc;
   cp /tmp/anykernel/ramdisk/init.spectrum.rc /system/vendor/etc/init/hw/init.spectrum.rc
   cp /tmp/anykernel/ramdisk/init.spectrum.sh /system/vendor/etc/init/hw/init.spectrum.sh
   cp /tmp/anykernel/ramdisk/init.ak.rc /system/vendor/etc/init/hw/init.ak.rc;
   insert_line /system/vendor/etc/init/hw/init.qcom.rc "init.ak.rc" after "import /vendor/etc/init/hw/init.mmi.rc" "import /vendor/etc/init/hw/init.ak.rc";
-  insert_line /system/vendor/etc/init/hw/init.qcom.rc "init.spectrum.rc" after "import /system/vendor/etc/init/hw/init.ak.rc" "import /system/vendor/etc/init/hw/init.spectrum.rc"
+  insert_line /system/vendor/etc/init/hw/init.qcom.rc "init.spectrum.rc" after "import /system/vendor/etc/init/hw/init.mmi.rc" "import /system/vendor/etc/init/hw/init.spectrum.rc"
   chmod 644 /system/vendor/etc/init/hw/init.ak.rc;
   chmod 644 /system/vendor/etc/init/hw/init.spectrum.rc
   chmod 644 /system/vendor/etc/init/hw/init.spectrum.sh
-  ui_print " "
 fi
 umount /vendor;
-umount /system;
+ui_print " ";
 
 # Sepolicy
 ui_print "   - Patching Magisk Sepolicy"
@@ -129,10 +124,10 @@ $bin/magiskpolicy --load sepolicy --save sepolicy \
     "allow vold logd dir read" \
     "allow vold logd lnk_file getattr" \
     ;
-ui_print "     Done"
+ui_print "       Done"
 ui_print " "
 # End Ramdisk Changes
 ui_print "   - Initializing Kernel Installation...";
 write_boot;
 
-ui_print "     All Done";
+ui_print "       All Done";
